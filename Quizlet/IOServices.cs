@@ -31,7 +31,7 @@ namespace Quizlet
 
         public BindingList<T> LoadDate<T>()
         {
-
+            
             if(!File.Exists(_path))
             {
                 File.CreateText(_path).Dispose();
@@ -41,6 +41,10 @@ namespace Quizlet
             using(var reader = File.OpenText(_path)) 
             {
                 var data = reader.ReadToEnd();
+                if (data == "")
+                {
+                    return new BindingList<T>();
+                }
                 return JsonConvert.DeserializeObject<BindingList<T>>(data);
             }
         }
