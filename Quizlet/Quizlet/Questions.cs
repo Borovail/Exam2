@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Quizlet
 {
-    class Questions
+    public class Questions
     {
         public int Id { get; set; }
         public string question { get; set; }

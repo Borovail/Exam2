@@ -4,7 +4,7 @@ using System.ComponentModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using static Quizlet.Entrance.Autorization;
+using static Quizlet.Entrance.UserAuthorization;
 using static System.Formats.Asn1.AsnWriter;
 
 namespace Quizlet.Quizlet
@@ -25,7 +25,7 @@ namespace Quizlet.Quizlet
             {
                 if (score.Login == CurrentLogin)
                 {
-                    Console.WriteLine(score.Login);
+                    Console.WriteLine("Name: "+ score.Login);
                     Console.WriteLine("Topic: "+ score.TopicName);
                     Console.WriteLine("Score: "+score.Score);
                 }

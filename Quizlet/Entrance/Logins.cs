@@ -44,10 +44,5 @@ namespace Quizlet.Entrance
             set { _birthDate = value; }
         }
 
-        public enum AutorizeStatus
-        {
-            User, Unknown
-        }
-
     }
 }

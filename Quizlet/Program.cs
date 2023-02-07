@@ -2,10 +2,9 @@
 using Quizlet.Entrance;
 using Quizlet.Quizlet;
 using System.ComponentModel;
-using static Quizlet.Entrance.Logins;
 
 Quiz quiz = new Quiz();
-Autorization autorization = new Autorization();
+UserAuthorization autorization = new UserAuthorization();
 ScoreStats scoreStats = new ScoreStats();
 
 string Login;
@@ -34,7 +33,7 @@ do
                 Console.WriteLine("Enter password");
                 Password = Console.ReadLine();
 
-                if (autorization.CheckAuthorizedUsers(Login, Password) == AutorizeStatus.Unknown)
+                if (autorization.CheckAuthorizedUsers(Login, Password) == UserAuthorization.AutorizeStatus.Unknown)
                 {
                     Console.WriteLine();
                     Console.WriteLine("Uncorrect password or login. May be this account do not exist");

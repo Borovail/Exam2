@@ -5,21 +5,29 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
 using System.Text;
-using static Quizlet.Entrance.Autorization;
+using static Quizlet.Entrance.UserAuthorization;
 using System.Threading.Tasks;
+using System.Collections.Immutable;
+
 namespace Quizlet
 {
-    internal class Quiz
+    public class Quiz
     {
         readonly string _biologyPath = $"{Environment.CurrentDirectory}\\Biology.json";
         readonly string _mathPath = $"{Environment.CurrentDirectory}\\Math.json";
         readonly string _englisjhPath = $"{Environment.CurrentDirectory}\\English.json";
+
         readonly string _statsPath = $"{Environment.CurrentDirectory}\\Stats.json";
+        readonly string _otherPath = $"{Environment.CurrentDirectory}\\";
+
         string topic;
 
-        BindingList<Questions> _biologyQuestions ;
+        BindingList<Questions> _biologyQuestions;
         BindingList<Questions> _mathQuestions;
-        BindingList<Questions> _englishQuestions ;
+        BindingList<Questions> _englishQuestions;
+
+        BindingList<Questions> _otherQuestions;
+
 
         BindingList<Stats> _stats;
 
@@ -28,24 +36,27 @@ namespace Quizlet
         IOServices ioServicesEnglish;
         IOServices ioServicesStats;
 
+        IOServices ioServicesOther;
 
-        
+
+
+
         public Quiz()
         {
             ioServicesBiology = new IOServices(_biologyPath);
-            ioServicesMath= new IOServices(_mathPath);
-            ioServicesEnglish= new IOServices(_englisjhPath);
+            ioServicesMath = new IOServices(_mathPath);
+            ioServicesEnglish = new IOServices(_englisjhPath);
 
-            ioServicesStats= new IOServices(_statsPath);
+            ioServicesStats = new IOServices(_statsPath);
 
             _biologyQuestions = ioServicesBiology.LoadDate<Questions>();
-            _mathQuestions = ioServicesMath.LoadDate< Questions>();
-            _englishQuestions = ioServicesEnglish.LoadDate< Questions>();
+            _mathQuestions = ioServicesMath.LoadDate<Questions>();
+            _englishQuestions = ioServicesEnglish.LoadDate<Questions>();
 
             _stats = ioServicesStats.LoadDate<Stats>();
-    }
+        }
 
-      
+
 
         public void SelectTopic(int ChooseTopic)
         {
@@ -70,8 +81,23 @@ namespace Quizlet
                     topic = "Mixed";
                     StartQuizlet(MixQuizlets());
                     break;
+
+                case 5:
+                    Console.WriteLine("Enter name of quizlet");
+                    string name = Console.ReadLine();
+                    if (CheckExistingFile(_otherPath + name + ".json"))
+                    {
+                    ioServicesOther = new IOServices(_otherPath+ name+".json");
+                    _otherQuestions = ioServicesOther.LoadDate<Questions>();
+                        topic = "name";
+                        StartQuizlet(_otherQuestions);
+                        break;
+                    }
+                    Console.WriteLine("Uncorrect name");
+                    break;
             }
         }
+
 
         void StartQuizlet(BindingList<Questions> questions)
         {
@@ -81,11 +107,11 @@ namespace Quizlet
             do
             {
                 int ChosenQuestion = random.Next(questions.Count);
-                Console.WriteLine(counter+": "+ questions[ChosenQuestion].question);
+                Console.WriteLine(counter + ": " + questions[ChosenQuestion].question);
                 Console.WriteLine();
                 Console.Write("You answer: ");
                 Console.WriteLine();
-                if(Console.ReadLine()== questions[ChosenQuestion].answer)
+                if (Console.ReadLine() == questions[ChosenQuestion].answer)
                 {
                     positiveAnswers += 1;
                     Console.WriteLine("Correct answer");
@@ -102,11 +128,23 @@ namespace Quizlet
 
             Console.WriteLine("\t\t\tYour result:");
             Console.WriteLine();
-            Console.WriteLine("Correct answers: "+ positiveAnswers);
+            Console.WriteLine("Correct answers: " + positiveAnswers);
 
-            _stats.Add(new Stats(CurrentLogin,topic, positiveAnswers));
+            _stats.Add(new Stats(CurrentLogin, topic, positiveAnswers));
             ioServicesStats.SaveDate(_stats);
 
+            Console.WriteLine("Top bests users");
+
+            var bar = _stats.OrderBy(i => i.Score);
+              
+
+            foreach (var item in bar)
+            {
+                Console.WriteLine("User name: " + item.Login);
+                Console.WriteLine("Topic: " + item.TopicName);
+                Console.WriteLine("Score " + item.Score);
+              
+            }
             Console.WriteLine();
             Console.WriteLine("Quiz ended");
         }
@@ -134,5 +172,17 @@ namespace Quizlet
             return MixedQuestions;
         }
 
+
+       public bool CheckExistingFile(string path)
+        {
+            if (!File.Exists(path))
+            {
+                Console.WriteLine("Can not find this quizlet");
+                return false;
+            }
+            return true;
+
+        }
     }
+
 }

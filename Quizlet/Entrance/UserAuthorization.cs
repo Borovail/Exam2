@@ -10,8 +10,14 @@ using static Quizlet.Entrance.Logins;
 
 namespace Quizlet.Entrance
 {
-    internal class Autorization
+     public class UserAuthorization
     {
+
+       public enum AutorizeStatus
+        {
+            Admin, User, Unknown
+        }
+      
         readonly string _path = $"{Environment.CurrentDirectory}\\Autorizations.json";
         public static string CurrentLogin { get; private set; }
         private static string CurrentPassword {  get;  set; }
@@ -19,7 +25,7 @@ namespace Quizlet.Entrance
         BindingList<Logins> _autorizationList;
         IOServices _ioServices;
 
-        public Autorization()
+        public UserAuthorization()
         {
             _ioServices = new IOServices(_path);
 
@@ -39,6 +45,13 @@ namespace Quizlet.Entrance
 
         public AutorizeStatus CheckAuthorizedUsers(string login, string password)
         {
+            if (login == "admin" && password == "Admin")
+            {
+                CurrentLogin = login;
+                CurrentPassword = password;
+                return AutorizeStatus.Admin;
+            }
+
             foreach (var user in _autorizationList)
             {
 
@@ -78,6 +91,7 @@ namespace Quizlet.Entrance
                 }
 
             }
+            Console.WriteLine();
             Console.WriteLine("Uncorect data");
 
 
@@ -99,6 +113,7 @@ namespace Quizlet.Entrance
                 }
 
             }
+            Console.WriteLine();
             Console.WriteLine("Uncorect data");
 
         }

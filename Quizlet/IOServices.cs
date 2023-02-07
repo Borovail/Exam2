@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace Quizlet
 {
-    internal class IOServices
+    public class IOServices
     {
         readonly string _path;
         public IOServices(string path) 
